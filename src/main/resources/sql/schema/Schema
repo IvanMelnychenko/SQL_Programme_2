@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS Clients;
+
+-- Table: Clients
+  CREATE TABLE Clients (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR (20) NOT NULL, INT age )
+);
