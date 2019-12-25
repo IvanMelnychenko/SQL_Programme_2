@@ -24,7 +24,5 @@ public class ConnectionService {
     } finally {
       st.close();
     }
-
-
   }
 }

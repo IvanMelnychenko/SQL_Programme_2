@@ -8,6 +8,9 @@ public class DatabaseService {
 
   private static Connection conn;
 
+  public static Connection getConn() {
+    return conn;
+  }
 
   public void getWay() {
     Menu menu = new Menu();
@@ -15,15 +18,14 @@ public class DatabaseService {
     try {
       conn = connectionService.getConnection();
       connectionService.initDb();
-while (true) {
-  menu.getAnswer();
-}
+      menu.getAnswer();
     } catch (SQLException e) {
       e.printStackTrace();
     }
   }
 
-  public void addClients(Scanner sc) throws SQLException {
+  public void addClients() throws SQLException {
+    Scanner sc = new Scanner(System.in);
     System.out.println("Enter client name");
     String name = sc.nextLine();
     System.out.println("Enter client age");
@@ -39,7 +41,8 @@ while (true) {
     }
   }
 
-  public void deleteClients(Scanner sc) throws SQLException {
+  public void deleteClients() throws SQLException {
+    Scanner sc = new Scanner(System.in);
     System.out.println("Enter client name");
     String name = sc.nextLine();
     PreparedStatement ps = conn.prepareStatement("DELETE  FROM Clients WHERE  name = ?");
@@ -51,30 +54,39 @@ while (true) {
     }
   }
 
-  public void viewClients(Scanner sc) throws SQLException {
+  public void viewClients() throws SQLException {
+
     PreparedStatement ps = conn.prepareStatement("SELECT * FROM Clients ");
-    ResultSet rs = ps.executeQuery();
-    while ((rs.next())) {
-      int id = rs.getInt("Clients_id");
-      String name = rs.getString("Clients_name");
-      int age = rs.getInt("Clients_age");
-      Client client = new Client(id, name, age);
-      System.out.println(client);
-      rs.close();
+
+    try {
+      ResultSet rs = ps.executeQuery();
+      try {
+        while ((rs.next())) {
+          int id = rs.getInt("id");
+          String name = rs.getString("name");
+          int age = rs.getInt("age");
+          Client client = new Client(id, name, age);
+          System.out.println(client);
+        }
+      } finally {
+        rs.close();
+      }
+    } finally {
       ps.close();
     }
   }
 
-  public void changeClients(Scanner sc) throws SQLException {
+  public void changeClients() throws SQLException {
+    Scanner sc = new Scanner(System.in);
     System.out.println("Enter client name");
     String name = sc.nextLine();
+    Scanner sq = new Scanner(System.in);
     System.out.println("Enter new age");
-    String sAge = sc.nextLine();
-    int age = Integer.parseInt(sAge);
+    int age = sq.nextInt();
     PreparedStatement ps = conn.prepareStatement("UPDATE  Clients SET age = ? WHERE name = ?");
     try {
-      ps.setString(1, name);
-      ps.setInt(2, age);
+      ps.setInt(1, age);
+      ps.setString(2, name);
       ps.executeUpdate();
     } finally {
       ps.close();
